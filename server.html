@@ -10,7 +10,7 @@ routes. In this example we're using separate modules
 to manage different sets of concerns.
 See the docs for each module for detail on their
 implementation</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">post</span>    <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./post&#39;</span><span class="p">),</span>
-    <span class="nx">auth</span>    <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./auth&#39;</span><span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="flow-control">Flow control</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Express will pass requests through each model in
+    <span class="nx">auth</span>    <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./auth&#39;</span><span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="flow-control">Flow control</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Express will pass requests through each module in
 the order that they are applied here.
 Here we use 'auth' first. Subsequent modules don't
 need to worry about negotiating auth, since it's
