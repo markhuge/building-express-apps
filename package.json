@@ -1,0 +1,26 @@
+{
+  "name": "building-express-applications",
+  "private": true,
+  "author": "Mark Wilkerson <mark@segfawlt.net>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/markhuge/building-express-apps.git"
+  },
+  "homepage": "http://markhuge.github.io/building-express-apps",
+  "scripts": {
+    "start": "nodemon server.js",
+    "docs": "groc --github ![node_modules/] server.js **/*.js README.md"
+  },
+  "dependencies": {
+    "body-parser": "^1.4.3",
+    "express": "^4.5.1",
+    "nodemon": "^1.2.1"
+  },
+  "devDependencies": {
+    "blanket": "^1.1.6",
+    "chai": "^1.9.1",
+    "mocha": "^1.20.1",
+    "sinon": "^1.10.2",
+    "supertest": "^0.13.0"
+  }
+}
