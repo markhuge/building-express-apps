@@ -1,0 +1,34 @@
+<!DOCTYPE html><html lang="en"><head><title>server</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="server"><meta name="groc-project-path" content="server.js"><meta name="groc-github-url" content="https://github.com/markhuge/building-express-apps"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path"><a href="https://github.com/markhuge/building-express-apps/blob/master/server.js">server.js</a></div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;express&#39;</span><span class="p">),</span>
+    <span class="nx">app</span>     <span class="o">=</span> <span class="nx">express</span><span class="p">(),</span>
+    <span class="nx">http</span>    <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">),</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>It's generally a good idea to use env variables
+for configuring environment-level things like
+listening ports.
+It's also a good idea to have a sensible default
+if the env default is undefined.</p></div></div><div class="code"><div class="wrapper">    <span class="nx">port</span>    <span class="o">=</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PORT</span> <span class="o">||</span> <span class="mi">8080</span><span class="p">;</span>
+    </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="sub-modules">Sub modules</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Each module manages their own dependencies and
+routes. In this example we're using separate modules
+to manage different sets of concerns.
+See the docs for each module for detail on their
+implementation</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">post</span>    <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./post&#39;</span><span class="p">),</span>
+    <span class="nx">auth</span>    <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./auth&#39;</span><span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="flow-control">Flow control</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Express will pass requests through each model in
+the order that they are applied here.
+Here we use 'auth' first. Subsequent modules don't
+need to worry about negotiating auth, since it's
+already been handled upstream.
+See the docs for the auth module for more detail on
+the implementation.</p></div></div><div class="code"><div class="wrapper"><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">auth</span><span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="mount-points">Mount Points</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Here we specify an optional 'mount point' for downstream
+modules. This means downstream modules can be written
+without having to manage their own route prefix.
+This is <em>really</em> handy for things like localizations
+and versioned APIs. changing a path from:
+'/api/v2/posts/1' to: '/api/v2/posts/1'
+doesn't require any modification of the 'post' module's
+routes.</p></div></div><div class="code"><div class="wrapper"><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s1">&#39;/posts&#39;</span><span class="p">,</span> <span class="nx">post</span><span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="bower-resolution">Bower resolution</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Using the express static middleware, we can resolve
+bower component paths without having to include
+'bower_components/' in our template files.
+This is handy, because our templates become tool
+agnostic, and don't need to be updated if we move
+to something else in the future. </p></div></div><div class="code"><div class="wrapper"><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="kr">static</span><span class="p">(</span><span class="nx">__dirname</span> <span class="o">+</span> <span class="s1">&#39;/bower_components&#39;</span><span class="p">));</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="exporting-the-app">Exporting the app</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Exporting our server instance makes testing easier,
+because we can simply include our server as a module
+rather than having to spin it up and negotiate
+connections.</p></div></div><div class="code"><div class="wrapper"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span><span class="nx">app</span><span class="p">).</span><span class="nx">listen</span><span class="p">(</span><span class="nx">port</span><span class="p">);</span></div></div></div></div></body></html>

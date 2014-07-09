@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="en"><head><title>auth/index</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../"><meta name="groc-document-path" content="auth/index"><meta name="groc-project-path" content="auth/index.js"><meta name="groc-github-url" content="https://github.com/markhuge/building-express-apps"><link rel="stylesheet" type="text/css" media="all" href="../assets/style.css"><script type="text/javascript" src="../assets/behavior.js"></script><body><div id="meta"><div class="file-path"><a href="https://github.com/markhuge/building-express-apps/blob/master/auth/index.js">auth/index.js</a></div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;express&#39;</span><span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>This makes it possible for this module to be
+included upstream.</p></div></div><div class="code"><div class="wrapper"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">();</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="routes">Routes</h2></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Routes will match in order.
+Further down in our code, we're checking all
+HTTP POST requests for a user.
+The one exception to this will be the
+POST request to log our user in.
+By putting the login route first, we ensure
+requests against this endpoint will be handled
+correctly.</p></div></div><div class="code"><div class="wrapper"><span class="nx">app</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="nx">login</span><span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Here we're doing a series of checks on any HTTP
+requests that create or modify content on the 
+server.
+We're going to assume that any of these
+operations require that a user is logged in.
+Content-level access/permissions are handled by
+the downstream modules. </p></div></div><div class="code"><div class="wrapper"><span class="nx">app</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="nx">checkLoggedIn</span><span class="p">);</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>  <span class="nx">checkLoggedIn</span><span class="p">);</span>
+<span class="nx">app</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="nx">checkLoggedIn</span><span class="p">);</span>
+
+
+
+<span class="kd">function</span> <span class="nx">login</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>This could be any any number of things including
+Passport.js. </p></div></div><div class="code"><div class="wrapper">  <span class="nx">checkCredentials</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">user</span><span class="p">,</span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">password</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">user</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="mi">401</span><span class="p">,</span> <span class="s2">&quot;Bad username and/or password&quot;</span><span class="p">);</span>
+    <span class="k">else</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Again, this could be Passport or something else.
+A serialize user function typically sets up your
+token/session/etc.</p></div></div><div class="code"><div class="wrapper">      <span class="nx">serialze</span><span class="p">(</span><span class="nx">user</span><span class="p">);</span>
+      </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>This will usually be a redirect to a success page
+or in the case of a single page app, a success msg
+that contains a serialized user object.
+In that case it would be something like:
+<code>res.json(user)</code></p></div></div><div class="code"><div class="wrapper">      <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="s2">&quot;Logged In&quot;</span><span class="p">);</span>
+       <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><h2 id="checkloggedin-middleware">checkLoggedIn Middleware</h2></div></div></div><div class="segment"><div class="code"><div class="wrapper"><span class="kd">function</span> <span class="nx">checkLoggedIn</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="nx">res</span><span class="p">,</span><span class="nx">next</span><span class="p">)</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If req.user is populated, our user is logged in
+and we can continue sending this request downstream</p></div></div><div class="code"><div class="wrapper">  <span class="k">if</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">user</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">next</span><span class="p">();</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Otherwise we throw a 403. The request stops here and
+is not passed through any additional modules.</p></div></div><div class="code"><div class="wrapper">  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="mi">403</span><span class="p">,</span><span class="s1">&#39;You are not logged in&#39;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span></div></div></div></div></body></html>
