@@ -28,7 +28,7 @@ var post    = require('./post'),
 // Flow control
 // ------------
 
-// Express will pass requests through each model in
+// Express will pass requests through each module in
 // the order that they are applied here.
 //
 // Here we use 'auth' first. Subsequent modules don't
