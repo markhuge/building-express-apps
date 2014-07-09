@@ -33,7 +33,8 @@ app.put("*",  checkLoggedIn);
 app.delete("*", checkLoggedIn);
 
 
-
+// Handlers
+// --------
 function login (req,res) {
   // This could be any any number of things including
   // Passport.js. 
